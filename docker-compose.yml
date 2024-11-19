@@ -1,0 +1,38 @@
+services:
+  alice:
+    build:
+      context: .
+      dockerfile: ./alice/Dockerfile
+    container_name: alice
+    env_file:
+      - ./tripleDH.env
+    environment:
+      - SERVICE_NAME=alice
+    networks:
+      tripleDH-network:
+        ipv4_address: 172.28.0.2
+    tty: true
+    stdin_open: true
+    depends_on:
+      - bob
+  bob:
+    build:
+      context: .
+      dockerfile: ./bob/Dockerfile
+    container_name: bob
+    env_file:
+      - ./tripleDH.env
+    environment:
+      - SERVICE_NAME=bob
+    networks:
+      tripleDH-network:
+        ipv4_address: 172.28.0.3
+    tty: true
+    stdin_open: true
+
+networks:
+  tripleDH-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
